@@ -3,8 +3,9 @@ class CommentsController < ApplicationController
   before_action :define_header
 
   def index
-
+    #@entry = Entry.GetWithId(params[:entry_id])
     if @entry = Entry.GetWithId(params[:entry_id])
+      #@comments = @entry.comments.all
       @comments = Comment.GetWithEntryId(params[:entry_id])
       #output = {:comments => @comments}
       render json: @comments
@@ -16,7 +17,7 @@ class CommentsController < ApplicationController
   end
 
   def show
-    if @entry = Entry.GetWithId(params[:news_id])
+    if @entry = Entry.GetWithId(params[:entry_id])
       if @comment = Comment.GetWithId(params[:id])
         render json: @comment
       else
@@ -48,7 +49,7 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    if @entry = Entry.GetWithId(params[:news_id])
+    if @entry = Entry.GetWithId(params[:entry_id])
       if @comment = Comment.GetWithId(params[:id])
         @comment.destroy
         render status: 204
@@ -75,7 +76,7 @@ class CommentsController < ApplicationController
       render json: output, status: 400
     else
       id = params[:id]
-      news_id = params[:news_id]
+      news_id = params[:entry_id]
       if @entry = Entry.GetWithId(news_id)
         if @comment = Comment.GetWithId(id)
           if @comment.update(comment_params)
@@ -102,7 +103,7 @@ class CommentsController < ApplicationController
     end
 
     def comment_params
-      params.permit(:author, :comment)
+      params.permit(:author, :comment, :entry_id)
     end
 
 end

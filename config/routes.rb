@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'news' => 'entries#index'
   put 'news' => 'entries#create'
   post 'news' => 'entries#create'
+  patch 'news/:id' => 'entries#update'
 
   get 'news/:entry_id/:comments' => 'comments#index'
   delete 'news/:entry_id/comments/:id' => 'comments#destroy'
@@ -19,5 +20,6 @@ Rails.application.routes.draw do
   get 'news/:entry_id/comments/:id' => 'comments#show'
   put 'news/:entry_id/comments' => 'comments#create'
   post 'news/:entry_id/comments/' => 'comments#create'
+  patch 'news/:entry_id/comments/:id' => 'comments#update'
 
 end

@@ -1,5 +1,6 @@
 class EntriesController < ApplicationController
   #before_action :authenticate_user!
+  before_action :define_entry
   before_action :define_header
   rescue_from ActiveRecord::RecordNotFound, :with => :not_found
   include EntriesHelper
@@ -9,7 +10,6 @@ class EntriesController < ApplicationController
 
     @entries.each do |entry|
       if entry.body.length >= 500
-        #find last space
         last_space = entry.body[0..500].rindex(' ') - 1
         entry.body = entry.body[0..last_space]
       end
@@ -19,7 +19,7 @@ class EntriesController < ApplicationController
   end
 
   def show
-    if @entry = Entry.GetWithId(params[:id])
+    if @entry
       render json: @entry
     else
       output = {:error => "Not Found"}
@@ -46,7 +46,7 @@ class EntriesController < ApplicationController
   end
 
   def destroy
-    if @entry = Entry.GetWithId(params[:id])
+    if @entry
       @entry.destroy
       render status: 200
     else
@@ -60,10 +60,8 @@ class EntriesController < ApplicationController
       output = {:error => "Bad Request: Id it's not editable"}
       render json: output, status: 400
     else
-      id = params[:id]
-      if @entry = Entry.GetWithId(params[:id])
-        if @entry.update(request.request_parameters)
-          @entry = Entry.GetWithId(id)
+      if @entry
+        if @entry.update(entry_params)
           render json: @entry
         else
           output = {:error => "Modification has failed"}
@@ -78,6 +76,10 @@ class EntriesController < ApplicationController
 
   private
 
+    def define_entry
+      @entry = Entry.find(params[:id])
+    end
+
     def not_found(error)
       render json: {:error => "/^not found$/gi"}.to_json, :status => 404
     end
@@ -87,7 +89,7 @@ class EntriesController < ApplicationController
     end
 
     def entry_params
-      params.require(:entry).permit(:title, :subtitle, :body)
+      params.permit(:title, :subtitle, :body, :created_at, :updated_at)
     end
 
 end
