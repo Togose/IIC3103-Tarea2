@@ -1,31 +1,30 @@
 class CommentsController < ApplicationController
   include CommentsHelper
   before_action :define_header
-  rescue_from ActiveRecord::RecordNotFound, :with => :not_found
 
   def index
-    @entry = Entry.find(params[:entry_id])
-    if @entry
+    begin
+      @entry = Entry.find(params[:entry_id])
       @comments = Comment.GetWithEntryId(params[:entry_id])
       render json: @comments
-    else
-      output = {:error => "Not Found Entry"}
+    rescue ActiveRecord::RecordNotFound
+      output = {:error => "Not found"}
       render json: output, status: 404
     end
   end
 
   def show
-    @entry = Entry.find(params[:entry_id])
-    if @entry
-      @comment = Comment.find(params[:id])
-      if @comment
-        render json: @comment
-      else
-        output = {:error => "Not Found Comment"}
-        render json: output, status: 404
-      end
-    else
-      output = {:error => "Not Found Entry"}
+    begin
+      @entry = Entry.find(params[:entry_id])
+        begin
+          @comment = Comment.find(params[:id])
+          ender json: @comment
+        rescue ActiveRecord::RecordNotFound
+          output = {:error => "Not found"}
+          render json: output, status: 404
+        end
+    rescue ActiveRecord::RecordNotFound
+      output = {:error => "Not found"}
       render json: output, status: 404
     end
   end
@@ -33,66 +32,61 @@ class CommentsController < ApplicationController
   def create
     author = params[:author]
     body = params[:comment]
-    @entry = Entry.find(params[:entry_id])
-    if @comment = @entry.comments.create(comment_params)
-      render json: @comment, status: 201
-    else
-      output = {:error => "Creation has failed"}
-      render json: output, status: 500
+    begin
+      @entry = Entry.find(params[:entry_id])
+      if @comment = @entry.comments.create(comment_params)
+        response.headers["Location"] = "news/#{@entry.id}/comments/#{@comment.id}"
+        render json: @comment, status: 201
+      else
+        output = {:error => "Creation has failed"}
+        render json: output, status: 500
+      end
+    rescue ActiveRecord::RecordNotFound
+      output = {:error => "Not found"}
+      render json: output, status: 404
     end
   end
 
   def destroy
-    @entry = Entry.find(params[:entry_id])
-    if @entry
-      @comment = Comment.find(params[:id])
-      if @comment
+    begin
+      @entry = Entry.find(params[:entry_id])
+      begin
+        @comment = Comment.find(params[:id])
         @comment.destroy
-        render status: 204
-      else
-        output = {:error => "Not Found Comment"}
+        render json: @comment, status: 200
+      rescue ActiveRecord::RecordNotFound
+        output = {:error => "Not found"}
         render json: output, status: 404
       end
-    else
-      output = {:error => "Not Found Entry"}
+    rescue ActiveRecord::RecordNotFound
+      output = {:error => "Not found"}
       render json: output, status: 404
     end
   end
 
   def update
-    if request.request_parameters.key?("id")
-      output = {:error => "Bad Request: Id it's not editable"}
-      render json: output, status: 400
-    elsif request.request_parameters.key?("created_at")
-      output = {:error => "Bad Request: Creation Time it's not editable"}
-      render json: output, status: 400
-    else
+    begin
       @entry = Entry.find(params[:entry_id])
-      if @entry
+      begin
         @comment = Comment.find(params[:id])
-        if @comment
-          if @comment.update(comment_params)
-            render json: @comment
-          else
-            output = {:error => "Modification has failed"}
-            render json: output, status: 500
-          end
+        if @comment.update(comment_params)
+          render json: @comment
         else
-          output = {:error => "Not Found Comment"}
-          render json: output, status: 404
+          output = {:error => "Modification has failed"}
+          render json: output, status: 500
         end
-      else
-        output = {:error => "Not Found Entry"}
+      rescue ActiveRecord::RecordNotFound
+        output = {:error => "Not found"}
         render json: output, status: 404
       end
+    rescue ActiveRecord::RecordNotFound
+      output = {:error => "Not found"}
+      render json: output, status: 404
     end
+    #end
   end
 
   private
-
-    def not_found(error)
-      render json: {:error => "Not Found"}.to_json, :status => 404
-    end
 
     def define_header
       response.headers["Content-Type"] = "application/json"
