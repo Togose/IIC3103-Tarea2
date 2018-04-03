@@ -33,7 +33,8 @@ class CommentsController < ApplicationController
   def create
     author = params[:author]
     body = params[:comment]
-    if @comment = Comment.create(comment_params)
+    @entry = Entry.find(params[:entry_id])
+    if @comment = @entry.comments.create(comment_params)
       render json: @comment, status: 201
     else
       output = {:error => "Creation has failed"}
@@ -98,7 +99,7 @@ class CommentsController < ApplicationController
     end
 
     def comment_params
-      params.permit(:author, :comment, :entry_id)
+      params.permit(:author, :comment)
     end
 
 end

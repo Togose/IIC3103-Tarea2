@@ -10,7 +10,9 @@ class EntriesController < ApplicationController
     @entries.each do |entry|
       if entry.body.length >= 500
         last_space = entry.body[0..500].rindex(' ') - 1
-        entry.body = entry.body[0..last_space]
+        entry.body = entry.body[0..last_space] + '...'
+      else
+        entry.body = entry.body[0..497] + '...'
       end
     end
     output = @entries
@@ -85,7 +87,7 @@ class EntriesController < ApplicationController
     end
 
     def entry_params
-      params.permit(:title, :subtitle, :body, :created_at, :updated_at, :id)
+      params.permit(:title, :subtitle, :body, :created_at, :updated_at)#, :id)
     end
 
 end
