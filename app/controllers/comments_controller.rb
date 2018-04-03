@@ -1,46 +1,39 @@
 class CommentsController < ApplicationController
   include CommentsHelper
   before_action :define_header
+  rescue_from ActiveRecord::RecordNotFound, :with => :not_found
 
   def index
-    #@entry = Entry.GetWithId(params[:entry_id])
-    if @entry = Entry.GetWithId(params[:entry_id])
-      #@comments = @entry.comments.all
+    @entry = Entry.find(params[:entry_id])
+    if @entry
       @comments = Comment.GetWithEntryId(params[:entry_id])
-      #output = {:comments => @comments}
       render json: @comments
     else
-      output = {:error => "Not Found"}
+      output = {:error => "Not Found Entry"}
       render json: output, status: 404
     end
-
   end
 
   def show
-    if @entry = Entry.GetWithId(params[:entry_id])
-      if @comment = Comment.GetWithId(params[:id])
+    @entry = Entry.find(params[:entry_id])
+    if @entry
+      @comment = Comment.find(params[:id])
+      if @comment
         render json: @comment
       else
-        output = {:error => "Not Found"}
+        output = {:error => "Not Found Comment"}
         render json: output, status: 404
       end
     else
-      output = {:error => "Not Found"}
+      output = {:error => "Not Found Entry"}
       render json: output, status: 404
     end
   end
-
-  #def new
-    #@comment = Comment.new
-  #end
 
   def create
     author = params[:author]
     body = params[:comment]
-    @entry = Entry.GetWithId(params[:entry_id])
     if @comment = Comment.create(comment_params)
-      #@comment = Comment.GetWithId(@comment.id)
-      @comment.entry_id = params[:entry_id]
       render json: @comment, status: 201
     else
       output = {:error => "Creation has failed"}
@@ -49,23 +42,21 @@ class CommentsController < ApplicationController
   end
 
   def destroy
-    if @entry = Entry.GetWithId(params[:entry_id])
-      if @comment = Comment.GetWithId(params[:id])
+    @entry = Entry.find(params[:entry_id])
+    if @entry
+      @comment = Comment.find(params[:id])
+      if @comment
         @comment.destroy
         render status: 204
       else
-        output = {:error => "Not Found"}
+        output = {:error => "Not Found Comment"}
         render json: output, status: 404
       end
     else
-      output = {:error => "Not Found"}
+      output = {:error => "Not Found Entry"}
       render json: output, status: 404
     end
   end
-
-  #def edit
-  #  @comment = Comment.find(params[:id])
-  #end
 
   def update
     if request.request_parameters.key?("id")
@@ -75,10 +66,10 @@ class CommentsController < ApplicationController
       output = {:error => "Bad Request: Creation Time it's not editable"}
       render json: output, status: 400
     else
-      id = params[:id]
-      news_id = params[:entry_id]
-      if @entry = Entry.GetWithId(news_id)
-        if @comment = Comment.GetWithId(id)
+      @entry = Entry.find(params[:entry_id])
+      if @entry
+        @comment = Comment.find(params[:id])
+        if @comment
           if @comment.update(comment_params)
             render json: @comment
           else
@@ -86,17 +77,21 @@ class CommentsController < ApplicationController
             render json: output, status: 500
           end
         else
-          output = {:error => "Not Found"}
+          output = {:error => "Not Found Comment"}
           render json: output, status: 404
         end
       else
-        output = {:error => "Not Found"}
+        output = {:error => "Not Found Entry"}
         render json: output, status: 404
       end
     end
   end
 
   private
+
+    def not_found(error)
+      render json: {:error => "Not Found"}.to_json, :status => 404
+    end
 
     def define_header
       response.headers["Content-Type"] = "application/json"
