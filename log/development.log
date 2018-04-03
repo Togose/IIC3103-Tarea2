@@ -21856,3 +21856,108 @@ Processing by CommentsController#show as */*
 Completed 404 Not Found in 8ms (Views: 0.1ms | ActiveRecord: 6.1ms)
 
 
+Started GET "/news" for 127.0.0.1 at 2018-04-03 12:35:27 -0300
+  [1m[35m (1.4ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC[0m
+Processing by EntriesController#index as */*
+  [1m[36mEntry Load (0.5ms)[0m  [1m[34mSELECT "entries"."id", "entries"."title", "entries"."subtitle", "entries"."body", "entries"."created_at", "entries"."updated_at" FROM "entries"[0m
+Completed 200 OK in 27ms (Views: 3.0ms | ActiveRecord: 4.6ms)
+
+
+Started POST "/news" for 127.0.0.1 at 2018-04-03 12:35:32 -0300
+Processing by EntriesController#create as */*
+  Parameters: {"title"=>"Título de la noticia creada", "subtitle"=>"Subtítulo de la noticia creada", "body"=>"Cuerpo de la noticia creada", "entry"=>{"title"=>"Título de la noticia creada", "subtitle"=>"Subtítulo de la noticia creada", "body"=>"Cuerpo de la noticia creada"}}
+Unpermitted parameter: :entry
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (1.1ms)[0m  [1m[32mINSERT INTO "entries" ("title", "subtitle", "body", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["title", "Título de la noticia creada"], ["subtitle", "Subtítulo de la noticia creada"], ["body", "Cuerpo de la noticia creada"], ["created_at", "2018-04-03 15:35:32.017499"], ["updated_at", "2018-04-03 15:35:32.017499"]]
+  [1m[35m (0.9ms)[0m  [1m[35mCOMMIT[0m
+Completed 201 Created in 18ms (Views: 0.4ms | ActiveRecord: 6.2ms)
+
+
+Started GET "/news/1" for 127.0.0.1 at 2018-04-03 12:35:35 -0300
+Processing by EntriesController#show as */*
+  Parameters: {"id"=>"1"}
+  [1m[36mEntry Load (0.3ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+Completed 200 OK in 4ms (Views: 0.4ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/news/8765432" for 127.0.0.1 at 2018-04-03 12:35:38 -0300
+Processing by EntriesController#show as */*
+  Parameters: {"id"=>"8765432"}
+  [1m[36mEntry Load (0.3ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 8765432], ["LIMIT", 1]]
+Completed 404 Not Found in 2ms (Views: 0.1ms | ActiveRecord: 0.3ms)
+
+
+Started PATCH "/news/1" for 127.0.0.1 at 2018-04-03 12:35:42 -0300
+Processing by EntriesController#update as */*
+  Parameters: {"title"=>"Nuevo título de la noticia", "id"=>"1", "entry"=>{"title"=>"Nuevo título de la noticia"}}
+  [1m[36mEntry Load (0.2ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+Unpermitted parameter: :entry
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCOMMIT[0m
+Completed 200 OK in 3ms (Views: 0.3ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/news/1/comments" for 127.0.0.1 at 2018-04-03 12:35:50 -0300
+Processing by CommentsController#index as */*
+  Parameters: {"entry_id"=>"1", "comments"=>"comments", "comment"=>{}}
+  [1m[36mEntry Load (0.2ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+  [1m[36mComment Load (0.5ms)[0m  [1m[34mSELECT "comments"."id", "comments"."author", "comments"."comment", "comments"."created_at" FROM "comments" WHERE "comments"."entry_id" = $1[0m  [["entry_id", 1]]
+Completed 200 OK in 9ms (Views: 5.8ms | ActiveRecord: 3.3ms)
+
+
+Started POST "/news/1/comments" for 127.0.0.1 at 2018-04-03 12:35:55 -0300
+Processing by CommentsController#create as */*
+  Parameters: {"author"=>"Autor del comentario", "comment"=>"contenido del comentario", "entry_id"=>"1"}
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  [1m[32mINSERT INTO "comments" ("author", "comment", "entry_id", "created_at", "updated_at") VALUES ($1, $2, $3, $4, $5) RETURNING "id"[0m  [["author", "Autor del comentario"], ["comment", "contenido del comentario"], ["entry_id", 1], ["created_at", "2018-04-03 15:35:55.630675"], ["updated_at", "2018-04-03 15:35:55.630675"]]
+  [1m[35m (0.6ms)[0m  [1m[35mCOMMIT[0m
+Completed 201 Created in 4ms (Views: 0.3ms | ActiveRecord: 1.2ms)
+
+
+Started PATCH "/news/3" for 127.0.0.1 at 2018-04-03 12:36:52 -0300
+Processing by EntriesController#update as */*
+  Parameters: {"title"=>"Nuevo título de la noticia", "id"=>"3", "entry"=>{"title"=>"Nuevo título de la noticia"}}
+  [1m[36mEntry Load (0.4ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 3], ["LIMIT", 1]]
+Unpermitted parameter: :entry
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCOMMIT[0m
+Completed 200 OK in 4ms (Views: 0.6ms | ActiveRecord: 0.8ms)
+
+
+Started PATCH "/news/1" for 127.0.0.1 at 2018-04-03 12:37:07 -0300
+Processing by EntriesController#update as */*
+  Parameters: {"title"=>"Nuevo título de la noticia", "id"=>"1", "entry"=>{"title"=>"Nuevo título de la noticia"}}
+  [1m[36mEntry Load (0.2ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+Unpermitted parameter: :entry
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.3ms)[0m  [1m[35mCOMMIT[0m
+Completed 200 OK in 3ms (Views: 0.3ms | ActiveRecord: 0.7ms)
+
+
+Started PATCH "/news/1" for 127.0.0.1 at 2018-04-03 12:37:27 -0300
+Processing by EntriesController#update as */*
+  Parameters: {"subtitle"=>"Nuevo Subtítulo de la noticia", "id"=>"1", "entry"=>{"subtitle"=>"Nuevo Subtítulo de la noticia"}}
+  [1m[36mEntry Load (0.3ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+Unpermitted parameter: :entry
+  [1m[35m (0.1ms)[0m  [1m[35mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  [1m[33mUPDATE "entries" SET "subtitle" = $1, "updated_at" = $2 WHERE "entries"."id" = $3[0m  [["subtitle", "Nuevo Subtítulo de la noticia"], ["updated_at", "2018-04-03 15:37:27.089069"], ["id", 1]]
+  [1m[35m (0.9ms)[0m  [1m[35mCOMMIT[0m
+Completed 200 OK in 5ms (Views: 0.3ms | ActiveRecord: 1.8ms)
+
+
+Started PATCH "/news/1" for 127.0.0.1 at 2018-04-03 12:37:37 -0300
+Processing by EntriesController#update as */*
+  Parameters: {"title"=>"Nuevo título de la noticia", "id"=>"1", "entry"=>{"title"=>"Nuevo título de la noticia"}}
+  [1m[36mEntry Load (0.3ms)[0m  [1m[34mSELECT  "entries".* FROM "entries" WHERE "entries"."id" = $1 LIMIT $2[0m  [["id", 1], ["LIMIT", 1]]
+Unpermitted parameter: :entry
+  [1m[35m (0.2ms)[0m  [1m[35mBEGIN[0m
+  [1m[35m (0.2ms)[0m  [1m[35mCOMMIT[0m
+Completed 200 OK in 4ms (Views: 0.3ms | ActiveRecord: 0.6ms)
+
+
+Started GET "/news" for 127.0.0.1 at 2018-04-03 12:37:48 -0300
+Processing by EntriesController#index as */*
+  [1m[36mEntry Load (0.2ms)[0m  [1m[34mSELECT "entries"."id", "entries"."title", "entries"."subtitle", "entries"."body", "entries"."created_at", "entries"."updated_at" FROM "entries"[0m
+Completed 200 OK in 6ms (Views: 4.2ms | ActiveRecord: 0.2ms)
+
+
