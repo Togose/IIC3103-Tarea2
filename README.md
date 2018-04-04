@@ -2,6 +2,8 @@
 
 Para la realización de esta tarea se utilizaron las siguientes referencias:
 
-https://captainvita.gitbooks.io/blog-with-ror/content/chapter2.html
+http://www.andrewhavens.com/posts/20/beginners-guide-to-creating-a-rest-api/
 
-https://blog.codeplace.com/building-an-admin-panel-for-your-rails-app-d672159eb26e
+https://developer.marklogic.com/try/rest/index
+
+http://www.restapitutorial.com/
