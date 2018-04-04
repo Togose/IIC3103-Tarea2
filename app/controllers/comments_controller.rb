@@ -35,7 +35,7 @@ class CommentsController < ApplicationController
     begin
       @entry = Entry.find(params[:entry_id])
       if @comment = @entry.comments.create(comment_params)
-        response.headers["Location"] = "news/#{@entry.id}/comments/#{@comment.id}"
+        response.headers["Location"] = "/news/#{@entry.id}/comments/#{@comment.id}"
         render json: @comment, status: 201
       else
         output = {:error => "Creation has failed"}

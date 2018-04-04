@@ -29,7 +29,7 @@ class EntriesController < ApplicationController
       output = {:error => "Can't create an entry with that id"}
     else
       if @entry = Entry.create(entry_params)
-        response.headers["Location"] = "news/#{@entry.id}"
+        response.headers["Location"] = "/news/#{@entry.id}"
         render json: @entry, status: 201
       else
         output = {:error => "Creation has failed"}
